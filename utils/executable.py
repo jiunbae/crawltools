@@ -1,4 +1,5 @@
 import __main__
+from typing import Union
 from pathlib import Path
 
 
@@ -8,8 +9,8 @@ class Executable:
 
     def __init__(self, file: str):
         self.command = file
-        self.module = __import__(file)
-        self.name = self.module.__name__
+        self.module = __import__(file, fromlist=(None, ))
+        self.name = next(reversed(file.split('.')))
 
     def __getattr__(self, key):
         if hasattr(self.module, key):
@@ -22,12 +23,17 @@ class Executable:
     def __call__(self, *args, **kwargs):
         return getattr(self.module, self.name)(*args, **kwargs)
 
+    @classmethod
+    def add(cls, executor: Union[Path, str]):
+        executor, *_ = str(executor).split('.')
+        executor = executor.replace('/', '.')
+
+        cls.s[next(reversed(executor.split('.')))] = cls(executor)
+
     @staticmethod
     def ismain():
         return Executable._.stem == 'main'
 
 
-for executor in map(lambda x: x.stem,
-                    filter(lambda x: x.name != Executable._.name,
-                           Path('.').glob('*.py'))):
-    Executable.s[executor] = Executable(executor)
+any(map(Executable.add, filter(lambda x: x.name != Executable._.name and not x.name.startswith('__'),
+                               Path('.').glob('crawler/*/spiders/*.py'))))
