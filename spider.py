@@ -1,3 +1,4 @@
+import sys
 import scrapy
 from scrapy.crawler import CrawlerProcess
 
@@ -5,12 +6,11 @@ from utils.arguments import Arguments
 from crawler import Spider
 
 
-if __name__ == "__main__":
-    arguments = Arguments()
+def main(args: Arguments.parse.Namespace):
+    process = CrawlerProcess(vars(args))
 
-    process = CrawlerProcess({
-        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
-    })
-
-    process.crawl(Spider.get('webtoon'))
+    process.crawl(Spider.get(args.command))
     process.start()
+
+if __name__ == "__main__":
+    main(Arguments())

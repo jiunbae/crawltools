@@ -1,4 +1,5 @@
 import argparse
+from functools import partial
 
 from .executable import Executable
 
@@ -8,9 +9,18 @@ class Arguments:
     parser = argparse.ArgumentParser(
         description='Crawler')
 
+    UPDATE_KEY = {
+        'IMAGES_STORE': 'output'
+    }
+
     @classmethod
     def add_argument(cls, *args, **kwargs):
         cls.parser.add_argument(*args, **kwargs)
+
+    @staticmethod
+    def update_argument(arguments, keyset):
+        target, key = keyset
+        setattr(arguments, target, getattr(arguments, key))
 
     def __new__(cls):
         # auto executable command
@@ -28,4 +38,12 @@ class Arguments:
         cls.parser.add_argument('--config', required=False, default=None, type=str,
                                 help="Path to config file")
 
-        return cls.parser.parse_args()
+        arguments = cls.parser.parse_args()
+
+        # custom arguments
+        for key, value in Executable.s[arguments.command].setting.items():
+            setattr(arguments, key, value)
+
+        any(map(partial(cls.update_argument, arguments), cls.UPDATE_KEY.items()))
+
+        return arguments
