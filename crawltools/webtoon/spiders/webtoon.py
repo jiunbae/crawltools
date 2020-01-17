@@ -2,10 +2,9 @@ from pathlib import Path
 
 import scrapy
 
-from crawler.spider import Spider
+from crawltools.spider import Spider
+from crawltools.utils.url import urlparse, queryparse, download
 from ..items import WebtoonItem
-from utils.url import urlparse, queryparse, download
-
 
 def arguments(parser):
     parser.add_argument('--id', required=False, default=0, type=int,

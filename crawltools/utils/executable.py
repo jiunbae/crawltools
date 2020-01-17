@@ -3,7 +3,7 @@ from typing import Union
 from pathlib import Path
 
 
-EXECUTABLES = 'crawler/*/spiders/*.py'
+EXECUTABLES = '*/spiders/*.py'
 
 
 class Executable:
@@ -11,7 +11,9 @@ class Executable:
     s = dict()
 
     def __init__(self, file: str):
-        self.command = file
+        paths = file.split('.')
+        file = '.'.join(paths[paths.index(next(iter(__name__.split('.')))):])
+
         self.module = __import__(file, fromlist=(None, ))
         self.settings = __import__(f"{'.'.join(file.split('.')[:2])}.settings", fromlist=(None, ))
         self.name = next(reversed(file.split('.')))
@@ -45,8 +47,8 @@ class Executable:
 
     @staticmethod
     def ismain():
-        return Executable._.stem == 'spider'
+        return Executable._.stem == 'crawler'
 
 
 any(map(Executable.add, filter(lambda x: x.name != Executable._.name and not x.name.startswith('__'),
-                               Path('.').glob(EXECUTABLES))))
+                               Path(__file__).parent.parent.glob(EXECUTABLES))))

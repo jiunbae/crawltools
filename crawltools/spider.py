@@ -1,6 +1,6 @@
 import scrapy
 
-from utils.beholder import Beholder
+from .utils.beholder import Beholder
 
 
 class Spider(scrapy.Spider, metaclass=Beholder):

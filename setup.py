@@ -1,29 +1,32 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
-from crawler import __version__
+from crawltools import __version__
 
 
 setup(
-    name='crawltools',
-    version=__version__,
-    description='Simple crawlers',
-    long_description=open('README.md').read(),
-    author='jiunbae',
-    author_email='maytryark@gmail.com',
-    url='https://github.com/maybes/crawler',
-    license='MIT',
-    install_requires=(
-        'scrapy',
-    ),
-    classifiers=[
+    name                = 'crawltools',
+    version             = __version__,
+    description         = 'Simple crawlers',
+    long_description    = open('README.md').read(),
+    author              = 'Jiun Bae',
+    author_email        = 'maytryark@gmail.com',
+    url                 = 'https://github.com/maybes/crawler',
+    license             = 'MIT',
+    keywords            = ['crawler', 'scrapy'],
+    python_requires     = '>= 3',
+    install_requires    = ('scrapy', ),
+    scripts             = ['bin/crawler', ],
+    packages            = find_packages(exclude=['docs', 'tests*']),
+    classifiers         = [
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ]
 )
