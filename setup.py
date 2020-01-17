@@ -2,9 +2,12 @@
 
 from setuptools import setup
 
+from crawler import __version__
+
+
 setup(
     name='crawltools',
-    version='0.1.1',
+    version=__version__,
     description='Simple crawlers',
     long_description=open('README.md').read(),
     author='jiunbae',
