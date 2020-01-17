@@ -13,6 +13,7 @@ setup(
     author              = 'Jiun Bae',
     author_email        = 'maytryark@gmail.com',
     url                 = 'https://github.com/maybes/crawler',
+    download_url        = 'https://github.com/MaybeS/crawler/releases/latest',
     license             = 'MIT',
     keywords            = ['crawler', 'scrapy'],
     python_requires     = '>= 3',
