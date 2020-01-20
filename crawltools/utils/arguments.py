@@ -25,7 +25,6 @@ class Arguments:
     def __new__(cls):
         # auto executable command
         executables = tuple(Executable.s)
-        print (executables)
         if len(executables) and Executable.ismain():
             cls.parser.add_argument("command", metavar="<command>",
                                     choices=executables,

@@ -41,7 +41,7 @@ class WebtoonSpider(Spider):
         if webtoonEnd == -1 or webtoonEnd > latest:
             webtoonEnd = latest
 
-        for index in range(webtoonStart, webtoonEnd + 1):
+        for index in self.progress(webtoonStart, webtoonEnd + 1):
             yield scrapy.Request(url=self.URL.format(webtoonId=self.ID, webtoonIndex=index),
                                  callback=self.parse, meta={'path': str(dest.joinpath(f'{index:06}'))})
 
