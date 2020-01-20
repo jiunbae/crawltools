@@ -40,8 +40,8 @@ class Executable:
 
     @classmethod
     def add(cls, executor: Union[Path, str]):
-        executor, *_ = str(executor).split('.')
-        executor = executor.replace('/', '.')
+        *executor, _ = str(executor).split('.')
+        executor = '.'.join(executor).replace('/', '.')
 
         cls.s[next(reversed(executor.split('.')))] = cls(executor)
 
