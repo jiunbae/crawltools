@@ -2,6 +2,12 @@
 
 Simple crawler
 
+## Installation
+
+```
+pip install crawltools
+```
+
 ## Quick start
 
 **Naver Webtoon crawling**
