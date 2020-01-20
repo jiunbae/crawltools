@@ -41,12 +41,17 @@ class WebtoonSpider(Spider):
         if webtoonEnd == -1 or webtoonEnd > latest:
             webtoonEnd = latest
 
-        for index in self.progress(webtoonStart, webtoonEnd + 1):
+        self.progress_init(webtoonStart, webtoonEnd + 1)
+        for index in range(webtoonStart, webtoonEnd + 1):
             yield scrapy.Request(url=self.URL.format(webtoonId=self.ID, webtoonIndex=index),
                                  callback=self.parse, meta={'path': str(dest.joinpath(f'{index:06}'))})
 
     def parse(self, response):
-        for index, src in enumerate(map(scrapy.Selector.extract, 
-                                        response.xpath("//div[@class='wt_viewer']//img/@src"))):
-            yield WebtoonItem(image_urls=[src], 
-                              image_names=[f'{response.meta["path"]}-{index}{Path(src).suffix}'])
+        image_urls, image_names = zip(*[
+            (src, f'{response.meta["path"]}-{index}{Path(src).suffix}')
+            for index, src in enumerate(map(scrapy.Selector.extract,
+                                        response.xpath("//div[@class='wt_viewer']//img/@src")))
+        ])
+        yield WebtoonItem(image_urls=image_urls,
+                          image_names=image_names,
+                          image_downloaded=[False] * len(image_urls))

@@ -9,11 +9,12 @@ class Spider(scrapy.Spider, metaclass=Beholder):
     POSTFIX ='Spider'
 
     @classmethod
-    def progress(cls, begin, end):
-        with tqdm(total=end+1, initial=begin) as tq:
-            for index in range(begin, end + 1):
-                yield index
-                tq.update(1)
+    def progress_init(cls, begin, end):
+        cls.progresser = tqdm(total=end, initial=begin)
+
+    @classmethod
+    def progress_update(cls, *args, **kwargs):
+        cls.progresser.update(1)
 
     @classmethod
     def _process(cls, name):

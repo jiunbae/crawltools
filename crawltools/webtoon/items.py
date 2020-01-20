@@ -9,6 +9,8 @@ import scrapy
 
 
 class WebtoonItem(scrapy.Item):
-    image_names = scrapy.Field()
-    image_urls = scrapy.Field()
     images = scrapy.Field()
+
+    image_urls = scrapy.Field()
+    image_names = scrapy.Field()
+    image_downloaded = scrapy.Field()
