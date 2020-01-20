@@ -9,7 +9,10 @@ from crawltools.spider import Spider
 
 
 def main(args: Arguments.parse.Namespace):
-    process = CrawlerProcess(vars(args))
+    config = vars(args)
+    config['LOG_LEVEL'] = 'ERROR'
+
+    process = CrawlerProcess(config)
 
     process.crawl(Spider.get(args.command))
     process.start()
