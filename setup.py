@@ -12,12 +12,16 @@ setup(
     long_description    = open('README.md').read(),
     author              = 'Jiun Bae',
     author_email        = 'maytryark@gmail.com',
-    url                 = 'https://github.com/maybes/crawler',
+    url                 = 'https://github.com/MaybeS/crawler',
     download_url        = 'https://github.com/MaybeS/crawler/releases/latest',
     license             = 'MIT',
     keywords            = ['crawler', 'scrapy'],
     python_requires     = '>= 3',
-    install_requires    = ('scrapy', ),
+    install_requires    = (
+        "scrapy==1.8.0",
+        "tqdm",
+        "pillow",
+    ),
     scripts             = ['bin/crawler', ],
     packages            = find_packages(exclude=['docs', 'tests*']),
     classifiers         = [

@@ -47,11 +47,14 @@ class WebtoonSpider(Spider):
                                  callback=self.parse, meta={'path': str(dest.joinpath(f'{index:06}'))})
 
     def parse(self, response):
-        image_urls, image_names = zip(*[
-            (src, f'{response.meta["path"]}-{index}{Path(src).suffix}')
-            for index, src in enumerate(map(scrapy.Selector.extract,
-                                        response.xpath("//div[@class='wt_viewer']//img/@src")))
-        ])
-        yield WebtoonItem(image_urls=image_urls,
-                          image_names=image_names,
-                          image_downloaded=[False] * len(image_urls))
+        try:
+            image_urls, image_names = zip(*[
+                (src, f'{response.meta["path"]}-{index}{Path(src).suffix}')
+                for index, src in enumerate(map(scrapy.Selector.extract,
+                                            response.xpath("//div[@class='wt_viewer']//img/@src")))
+            ])
+            yield WebtoonItem(image_urls=image_urls,
+                            image_names=image_names,
+                            image_downloaded=[False] * len(image_urls))
+        except ValueError:
+            pass
