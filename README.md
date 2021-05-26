@@ -10,8 +10,10 @@ pip install crawltools
 
 ## Quick start
 
-**Naver Webtoon crawling**
+```
+crawler webtoon --id {id} --output {path/to/output}
+```
 
-```
-crawler webtoon --id webtoonid --output path
-```
+Crawlers:
+- webtoon (naver webtoon)
+- manatoki

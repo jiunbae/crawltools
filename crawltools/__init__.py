@@ -6,4 +6,4 @@ from crawltools.webtoon.spiders.webtoon import WebtoonSpider
 
 sys.path.append(str(Path(__file__).parent))
 
-__version__ = '0.1.6'
+__version__ = '0.2.0'

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import argparse
+
 import scrapy
 from scrapy.crawler import CrawlerProcess
 
@@ -7,7 +9,7 @@ from crawltools.utils.arguments import Arguments
 from crawltools.spider import Spider
 
 
-def main(args: Arguments.parse.Namespace):
+def main(args: argparse.Namespace):
     config = vars(args)
     config['LOG_LEVEL'] = 'ERROR'
 
