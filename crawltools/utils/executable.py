@@ -4,6 +4,7 @@ from pathlib import Path
 
 
 EXECUTABLES = '*/spiders/*.py'
+EXECUTABLE_MAIN = 'crawler'
 
 
 class Executable:
@@ -47,8 +48,13 @@ class Executable:
 
     @staticmethod
     def ismain():
-        return Executable._.stem == 'crawler'
+        return Executable._.stem == EXECUTABLE_MAIN
 
 
-any(map(Executable.add, filter(lambda x: x.name != Executable._.name and not x.name.startswith('__'),
-                               Path(__file__).parent.parent.glob(EXECUTABLES))))
+any(map(
+    Executable.add, 
+    filter(
+        lambda x: x.name != Executable._.name and not x.name.startswith('__'),
+        Path(__file__).parent.parent.glob(EXECUTABLES)
+    )
+))

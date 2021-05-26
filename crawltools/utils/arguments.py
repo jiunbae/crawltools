@@ -5,10 +5,6 @@ from .executable import Executable
 
 
 class Arguments:
-    parse = argparse
-    parser = argparse.ArgumentParser(
-        description='Crawler')
-
     UPDATE_KEY = {
         'IMAGES_STORE': 'output'
     }
@@ -23,27 +19,38 @@ class Arguments:
         setattr(arguments, target, getattr(arguments, key))
 
     def __new__(cls):
-        # auto executable command
+        parser = argparse.ArgumentParser(description='Crawler')
         executables = tuple(Executable.s)
-        if len(executables) and Executable.ismain():
-            cls.parser.add_argument("command", metavar="<command>",
-                                    choices=executables,
-                                    help=f'Choice from {", ".join(executables)}')
 
-        for executor in executables:
-            Executable.s[executor].arguments(cls.parser)
+        if not len(executables):
+            raise NotImplementedError('No implemented executables are detected!')
 
-        cls.parser.add_argument('-o', '--output', required=False, default='output.json', type=str,
-                                help="Path to output")
-        cls.parser.add_argument('--config', required=False, default=None, type=str,
-                                help="Path to config file")
+        if Executable.ismain():
+            parser.add_argument("command", metavar="<command>",
+                                choices=executables,
+                                help=f'Choice from {", ".join(executables)}')
 
-        arguments = cls.parser.parse_args()
+        parser.add_argument('-o', '--output', required=False, default='output', type=str,
+                            help="Path to output directory")
+        parser.add_argument('--config', required=False, default=None, type=str,
+                            help="Path to config file")
+        
+        cmd_args, remain_args = parser.parse_known_args()
+
+        executor = Executable.s.get(cmd_args.command)
+        
+        exec_parser = argparse.ArgumentParser()
+        executor.arguments(exec_parser)
+        args = exec_parser.parse_args(remain_args)
+        
+        # previous arguments
+        for arg_key, arg_val in vars(cmd_args).items():
+            setattr(args, arg_key, arg_val)
 
         # custom arguments
-        for key, value in Executable.s[arguments.command].setting.items():
-            setattr(arguments, key, value)
+        for key, value in executor.setting.items():
+            setattr(args, key, value)
 
-        any(map(partial(cls.update_argument, arguments), cls.UPDATE_KEY.items()))
+        any(map(partial(cls.update_argument, args), cls.UPDATE_KEY.items()))
 
-        return arguments
+        return args
