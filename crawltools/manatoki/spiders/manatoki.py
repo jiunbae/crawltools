@@ -1,5 +1,7 @@
 from pathlib import Path
 from itertools import chain
+from functools import partial
+import time
 
 import scrapy
 
@@ -24,13 +26,22 @@ class ManatokiSpider(Spider):
     URL_LIST = "https://{base_url}/comic/{comic_id}"
     URL_ITEM = "https://{base_url}/comic/{comic_index}"
 
+    def handle_error(self, err, callback):
+        time.sleep(600)
+        yield scrapy.Request(
+            url=err.request.url,
+            meta=err.request.meta,
+            callback=callback,
+        )
+
     def start_requests(self):
         self.ID = str(self.settings.get('id'))
         self.BASE_URL = str(self.settings.get('url'))
         
         yield scrapy.Request(
             self.URL_LIST.format(base_url=self.BASE_URL, comic_id=self.ID),
-            callback=self.parse_init
+            callback=self.parse_init,
+            errback=partial(self.handle_error, callback=self.parse_init),
         )
 
     def parse_init(self, response):
@@ -49,6 +60,7 @@ class ManatokiSpider(Spider):
                 url=item_href,
                 meta={'path': f'{comic_name}/{item_name}'},
                 callback=self.parse,
+                errback=partial(self.handle_error, callback=self.parse),
             )
 
     def parse(self, response):
