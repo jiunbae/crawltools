@@ -23,7 +23,10 @@ class WebtoonSpider(Spider):
 
     def start_requests(self):
         self.ID = str(self.settings.get('id'))
-        yield scrapy.Request(self.URL_LIST.format(webtoonId=self.ID), callback=self.parse_init)
+        yield scrapy.Request(
+            self.URL_LIST.format(webtoonId=self.ID),
+            callback=self.parse_init
+        )
 
     def parse_init(self, response):
         dest = Path(self.ID)
@@ -43,18 +46,27 @@ class WebtoonSpider(Spider):
 
         self.progress_init(webtoonStart, webtoonEnd + 1)
         for index in range(webtoonStart, webtoonEnd + 1):
-            yield scrapy.Request(url=self.URL.format(webtoonId=self.ID, webtoonIndex=index),
-                                 callback=self.parse, meta={'path': str(dest.joinpath(f'{index:06}'))})
+            yield scrapy.Request(
+                url=self.URL.format(webtoonId=self.ID, webtoonIndex=index),
+                callback=self.parse,
+                meta={'path': str(dest.joinpath(f'{index:06}'))},
+            )
 
     def parse(self, response):
         try:
             image_urls, image_names = zip(*[
                 (src, f'{response.meta["path"]}-{index}{Path(src).suffix}')
-                for index, src in enumerate(map(scrapy.Selector.extract,
-                                            response.xpath("//div[@class='wt_viewer']//img/@src")))
+                for index, src in enumerate(map(
+                    scrapy.Selector.extract,
+                    response.xpath("//div[@class='wt_viewer']//img/@src")
+                ))
             ])
-            yield WebtoonItem(image_urls=image_urls,
-                            image_names=image_names,
-                            image_downloaded=[False] * len(image_urls))
+
+            yield WebtoonItem(
+                image_urls=image_urls,
+                image_names=image_names,
+                image_downloaded=[False] * len(image_urls)
+            )
+
         except ValueError:
             pass
