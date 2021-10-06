@@ -18,7 +18,7 @@ setup(
     keywords            = ['crawler', 'scrapy'],
     python_requires     = '>= 3',
     install_requires    = (
-        "scrapy==1.8.0",
+        "scrapy==1.8.1",
         "tqdm",
         "pillow",
     ),
